@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+  aws:
+    image: pafortin/goaws
+    ports:
+      - 4100:4100
+    volumes:
+      - ./env-conf/goaws.yaml:/conf/goaws.yaml
+
+  app:
+    depends_on:
+      - aws
+    build: .
+    environment:
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - AWS_ENDPOINT=http://aws:4100
+      - AWS_REGION=us-east-1
+      - AWS_ACCOUNT_ID=100010001000
+      - AWS_QUEUE_NAME=test1
+      - AWS_TOPIC_ARN=arn:aws:sns:local:000000000000:topic1
+    volumes:
+      - ${PWD}/env-conf/config.yaml:/config.yaml
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./env-conf/prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+
+  grafana:
+    image: grafana/grafana
+    user: "104"
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./env-conf/grafana/provisioning/:/etc/grafana/provisioning/
+    env_file:
+      - ./env-conf/grafana/grafana.config
+
+volumes:
+  grafana_data:
+  prometheus_data:

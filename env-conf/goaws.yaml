@@ -1,0 +1,19 @@
+---
+Local:
+  Host: goaws.com
+  Port: 4100
+  Region: us-east-1
+  AccountId: "100010001000"
+  LogMessages: false
+  LogFile: ./goaws_messages.log
+  QueueAttributeDefaults:
+    VisibilityTimeout: 30
+    ReceiveMessageWaitTimeSeconds: 0
+  Queues:
+    - Name: test1
+      ReceiveMessageWaitTimeSeconds: 20
+  Topics:
+    - Name: topic1
+      Subscriptions:
+        - QueueName: test1
+          Raw: true

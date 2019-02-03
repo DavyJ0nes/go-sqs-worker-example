@@ -1,0 +1,7 @@
+---
+aws:
+  endpoint: http://localhost:4100
+  region: us-east-1
+  accountID: 100010001000
+  queueName: test1
+  topicARN: arn:aws:sns:local:000000000000:topic1
