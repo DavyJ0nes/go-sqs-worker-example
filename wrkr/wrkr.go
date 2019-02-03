@@ -27,7 +27,7 @@ func init() {
 	processingLatency = prometheus.NewHistogram(prometheus.HistogramOpts{
 		Name:    "messages_processing_latency",
 		Help:    "Time spent processing messages",
-		Buckets: []float64{.001, .01, .05},
+		Buckets: prometheus.DefBuckets,
 	})
 
 	messagesInFlight = prometheus.NewGauge(prometheus.GaugeOpts{
